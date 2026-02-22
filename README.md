@@ -1,8 +1,8 @@
-# MediaFetch
+# AuroraFetch
 
 A lightweight utility that uses yt-dlp and FFmpeg to download publicly accessible, non‑DRM media from URLs.
 
-MediaFetch is intended for downloading content you have the legal right to access, including public domain media, Creative Commons content, and personal files.
+AuroraFetch is intended for downloading content you have the legal right to access, including public domain media, Creative Commons content, and personal files.
 
 This project does NOT encourage piracy or copyright infringement. Please use responsibly.
 
@@ -18,7 +18,7 @@ This project does NOT encourage piracy or copyright infringement. Please use res
 
 ### Option 1 — Run from source
 1. Install Python 3.x  
-2. Run: MediaFetch.py 
+2. Run: AuroraFetch.py 
 
 ### Option 2 — Windows executable
 Download and run the precompiled Windows executable.

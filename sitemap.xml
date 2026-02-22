@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/activity</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/issues</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/pulls</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/actions</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/security</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/blob/main/AuroraFetch.py</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/blob/main/README.md</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/releases</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/releases/tag/v1.2.0</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/search?q=repo%3ANadirisim%2FAuroraFetch++language%3APython</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/labels</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/milestones</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/commit/67c6c418d3aa1e05014f14c0216aad3d0242f22b</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/releases/tag/Video_downloader</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/commit/1e39a2fb4b60b701e819fe7023b3ef8dc9b2d33d</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/releases/tag/MediaFetch</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/milestones?state=closed</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/commit/e5b6a698543cc48fcd26b528b69cb5bea0590741</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://github.com/Nadirisim/AuroraFetch/commit/0018ea6273ed746d17488a6c2c2ed569c4c69ba4</loc>
+  <lastmod>2026-02-22T21:32:05+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+
+
+</urlset>

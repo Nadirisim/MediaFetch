@@ -49,6 +49,152 @@ AuroraFetch doesnt rely on or really use any servers except for downloading yt-d
   are welcome on GitHub.
 """
 FETCH_TIMEOUT  = 20   # seconds before fetch is considered hung
+SETTINGS_DIR   = os.path.join(os.path.expanduser("~"), ".aurorafetch")
+SETTINGS_FILE  = os.path.join(SETTINGS_DIR, "settings.json")
+
+# ── Translations ─────────────────────────────────────────────────────────────
+TRANSLATIONS = {
+    "en": {
+        "dep_status":       "  Dependency Status  ",
+        "checking_ytdlp":   "⏳ Checking yt-dlp…",
+        "checking_ffmpeg":  "⏳ Checking ffmpeg…",
+        "video_url":        "  Video URL  ",
+        "paste_placeholder":"Paste URL here…",
+        "fetch_info":       "  Fetch Info  ",
+        "download_mode":    "  Download Mode  ",
+        "video_mp4":        "Video (MP4)",
+        "mp3_audio":        "MP3 (audio only)",
+        "mp3_note":         "MP3 mode: extracts audio only, converts to MP3, embeds thumbnail & metadata. Requires ffmpeg.",
+        "video_note":       "Video mode: downloads video + audio merged into MP4 with AAC audio (Windows Media Player compatible).",
+        "video_info":       "  Video Info  ",
+        "title":            "Title:",
+        "duration":         "Duration:",
+        "options":          "  Options  ",
+        "resolution":       "Resolution:",
+        "quality":          "Quality:",
+        "save_to":          "Save to:",
+        "browse":           "Browse",
+        "download":         "⬇  Download",
+        "abort":            "✖  Abort",
+        "progress":         "  Progress  ",
+        "speed":            "Speed: —",
+        "eta":              "ETA: —",
+        "size":             "Size: —",
+        "waiting_deps":     "Waiting for dependencies…",
+        "ready":            "Ready.",
+        "help":             "Help",
+        "settings":         "Settings",
+        "language_tr":      "Türkçe'ye Geç",
+        "about":            "About AuroraFetch",
+        "please_wait":      "Please wait",
+        "deps_loading":     "Dependencies are still loading.",
+        "ytdlp_missing":    "yt-dlp missing",
+        "ytdlp_not_avail":  "yt-dlp not available. Restart the app.",
+        "no_url":           "No URL",
+        "paste_url_first":  "Please paste a URL first.",
+        "no_format":        "No Format",
+        "fetch_first":      "Please fetch video info first.",
+        "ffmpeg_required":  "ffmpeg Required",
+        "ffmpeg_not_found": "ffmpeg was not found or could not be downloaded.\nCheck your internet connection and restart the app.",
+        "fetching_info":    "Fetching video info…",
+        "info_fetched":     "Info fetched — select options and click Download.",
+        "fetch_error":      "Fetch Error",
+        "fetch_err_msg":    "Could not fetch video info:\n\n",
+        "starting_mp3":     "Starting MP3 download at {br} kbps…",
+        "starting_video":   "Starting video download…",
+        "downloading":      "Downloading… {pct:.1f}%",
+        "post_processing":  "Post-processing…",
+        "dl_complete":      "✔ {label} download complete!",
+        "done":             "Done",
+        "saved_to":         "{label} saved to:\n{path}",
+        "aborting":         "Aborting…",
+        "dl_aborted":       "Download aborted.",
+        "dl_error":         "Download Error",
+        "fetch_timeout":    "Fetch timed out after {t}s — check your connection or URL.",
+        "ytdlp_not_avail2": "✘ yt-dlp not available — restart app",
+        "ytdlp_updated":    " (just updated!)",
+        "ytdlp_uptodate":   " (up to date)",
+        "ffmpeg_disabled":  "⚠ ffmpeg not available — MP3 and high-res merging disabled",
+        "best_auto":        "Best (auto-selected)",
+        "needs_ffmpeg":     "  ⚠ needs ffmpeg",
+    },
+    "tr": {
+        "dep_status":       "  Bağımlılık Durumu  ",
+        "checking_ytdlp":   "⏳ yt-dlp kontrol ediliyor…",
+        "checking_ffmpeg":  "⏳ ffmpeg kontrol ediliyor…",
+        "video_url":        "  Video URL  ",
+        "paste_placeholder":"URL'yi buraya yapıştırın…",
+        "fetch_info":       "  Bilgi Getir  ",
+        "download_mode":    "  İndirme Modu  ",
+        "video_mp4":        "Video (MP4)",
+        "mp3_audio":        "MP3 (yalnızca ses)",
+        "mp3_note":         "MP3 modu: yalnızca sesi çıkarır, MP3'e dönüştürür, küçük resim ve meta verileri gömer. ffmpeg gerektirir.",
+        "video_note":       "Video modu: video + ses birleştirilerek AAC ses ile MP4 olarak indirilir (Windows Media Player uyumlu).",
+        "video_info":       "  Video Bilgisi  ",
+        "title":            "Başlık:",
+        "duration":         "Süre:",
+        "options":          "  Seçenekler  ",
+        "resolution":       "Çözünürlük:",
+        "quality":          "Kalite:",
+        "save_to":          "Kayıt yeri:",
+        "browse":           "Gözat",
+        "download":         "⬇  İndir",
+        "abort":            "✖  İptal",
+        "progress":         "  İlerleme  ",
+        "speed":            "Hız: —",
+        "eta":              "Kalan: —",
+        "size":             "Boyut: —",
+        "waiting_deps":     "Bağımlılıklar bekleniyor…",
+        "ready":            "Hazır.",
+        "help":             "Yardım",
+        "settings":         "Ayarlar",
+        "language_tr":      "Switch to English",
+        "about":            "AuroraFetch Hakkında",
+        "please_wait":      "Lütfen bekleyin",
+        "deps_loading":     "Bağımlılıklar hâlâ yükleniyor.",
+        "ytdlp_missing":    "yt-dlp bulunamadı",
+        "ytdlp_not_avail":  "yt-dlp kullanılamıyor. Uygulamayı yeniden başlatın.",
+        "no_url":           "URL Yok",
+        "paste_url_first":  "Lütfen önce bir URL yapıştırın.",
+        "no_format":        "Format Yok",
+        "fetch_first":      "Lütfen önce video bilgisini getirin.",
+        "ffmpeg_required":  "ffmpeg Gerekli",
+        "ffmpeg_not_found": "ffmpeg bulunamadı veya indirilemedi.\nİnternet bağlantınızı kontrol edip uygulamayı yeniden başlatın.",
+        "fetching_info":    "Video bilgisi getiriliyor…",
+        "info_fetched":     "Bilgi alındı — seçenekleri belirleyip İndir'e tıklayın.",
+        "fetch_error":      "Getirme Hatası",
+        "fetch_err_msg":    "Video bilgisi alınamadı:\n\n",
+        "starting_mp3":     "{br} kbps'de MP3 indirmesi başlatılıyor…",
+        "starting_video":   "Video indirmesi başlatılıyor…",
+        "downloading":      "İndiriliyor… {pct:.1f}%",
+        "post_processing":  "İşleniyor…",
+        "dl_complete":      "✔ {label} indirmesi tamamlandı!",
+        "done":             "Tamamlandı",
+        "saved_to":         "{label} şuraya kaydedildi:\n{path}",
+        "aborting":         "İptal ediliyor…",
+        "dl_aborted":       "İndirme iptal edildi.",
+        "dl_error":         "İndirme Hatası",
+        "fetch_timeout":    "{t} saniye sonra zaman aşımı — bağlantınızı veya URL'yi kontrol edin.",
+        "ytdlp_not_avail2": "✘ yt-dlp kullanılamıyor — uygulamayı yeniden başlatın",
+        "ytdlp_updated":    " (güncellendi!)",
+        "ytdlp_uptodate":   " (güncel)",
+        "ffmpeg_disabled":  "⚠ ffmpeg kullanılamıyor — MP3 ve yüksek çözünürlüklü birleştirme devre dışı",
+        "best_auto":        "En İyi (otomatik)",
+        "needs_ffmpeg":     "  ⚠ ffmpeg gerekli",
+    },
+}
+
+def _load_settings():
+    try:
+        with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+            return json.loads(f.read())
+    except Exception:
+        return {}
+
+def _save_settings(data):
+    os.makedirs(SETTINGS_DIR, exist_ok=True)
+    with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+        f.write(json.dumps(data, indent=2))
 
 # ── Globals ───────────────────────────────────────────────────────────────────
 IS_FROZEN      = getattr(sys, "frozen", False)
@@ -219,6 +365,9 @@ class App:
         self._deps_ready  = False
         self._fetch_timer = None   # used for timeout
 
+        settings = _load_settings()
+        self._lang = settings.get("language", "en")
+
         self._apply_styles()
         self._build_ui()
         self._mode_changed()
@@ -258,117 +407,165 @@ class App:
                      font=("Segoe UI", 10), focuscolor=bg)
         s.map("TRadiobutton",       background=[("active", bg)])
 
+    # ── Localization ─────────────────────────────────────────────────────────
+
+    def _t(self, key):
+        return TRANSLATIONS.get(self._lang, TRANSLATIONS["en"]).get(key, key)
+
+    def _toggle_language(self):
+        self._lang = "tr" if self._lang == "en" else "en"
+        settings = _load_settings()
+        settings["language"] = self._lang
+        _save_settings(settings)
+        self._refresh_ui_text()
+
+    def _refresh_ui_text(self):
+        self.dep_frame.config(text=self._t("dep_status"))
+        self.url_frame.config(text=self._t("video_url"))
+        self.fetch_btn.config(text=self._t("fetch_info"))
+        self.mode_frame.config(text=self._t("download_mode"))
+        self.rb_video.config(text=self._t("video_mp4"))
+        self.rb_mp3.config(text=self._t("mp3_audio"))
+        self.info_frame.config(text=self._t("video_info"))
+        self.lbl_title_label.config(text=self._t("title"))
+        self.lbl_dur_label.config(text=self._t("duration"))
+        self.opt_frame.config(text=self._t("options"))
+        self.lbl_save.config(text=self._t("save_to"))
+        self.browse_btn.config(text=self._t("browse"))
+        self.dl_btn.config(text=self._t("download"))
+        self.abort_btn.config(text=self._t("abort"))
+        self.prog_frame.config(text=self._t("progress"))
+        self._mode_changed()
+        self.settings_menu.entryconfig(0, label=self._t("language_tr"))
+        self.help_menu.entryconfig(0, label=self._t("about"))
+        self.menubar.entryconfig(0, label=self._t("help"))
+        self.menubar.entryconfig(1, label=self._t("settings"))
+        if self.url_entry.get() in ("Paste URL here…", "URL'yi buraya yapıştırın…"):
+            self.url_entry.delete(0, "end")
+            self.url_entry.insert(0, self._t("paste_placeholder"))
+
     # ── UI ────────────────────────────────────────────────────────────────────
 
     def _build_ui(self):
         P = 14
 
         # ── Menu bar ──────────────────────────────────────────────────────────
-        menubar = tk.Menu(self.root, bg="#313244", fg="#cdd6f4",
+        self.menubar = tk.Menu(self.root, bg="#313244", fg="#cdd6f4",
                           activebackground="#45475a", activeforeground="#cdd6f4",
                           borderwidth=0, relief="flat")
-        help_menu = tk.Menu(menubar, tearoff=0, bg="#313244", fg="#cdd6f4",
+        self.help_menu = tk.Menu(self.menubar, tearoff=0, bg="#313244", fg="#cdd6f4",
                              activebackground="#45475a", activeforeground="#cdd6f4")
-        help_menu.add_command(label="About AuroraFetch", command=self._show_about)
-        menubar.add_cascade(label="Help", menu=help_menu)
-        self.root.config(menu=menubar)
+        self.help_menu.add_command(label=self._t("about"), command=self._show_about)
+        self.menubar.add_cascade(label=self._t("help"), menu=self.help_menu)
+        self.settings_menu = tk.Menu(self.menubar, tearoff=0, bg="#313244", fg="#cdd6f4",
+                                      activebackground="#45475a", activeforeground="#cdd6f4")
+        self.settings_menu.add_command(label=self._t("language_tr"),
+                                        command=self._toggle_language)
+        self.menubar.add_cascade(label=self._t("settings"), menu=self.settings_menu)
+        self.root.config(menu=self.menubar)
 
         # ── Dependency status ─────────────────────────────────────────────────
-        dep = ttk.LabelFrame(self.root, text="  Dependency Status  ", padding=10)
-        dep.pack(fill="x", padx=P, pady=(P, 6))
-        self.lbl_ytdlp  = ttk.Label(dep, text="⏳ Checking yt-dlp…",
+        self.dep_frame = ttk.LabelFrame(self.root, text=self._t("dep_status"), padding=10)
+        self.dep_frame.pack(fill="x", padx=P, pady=(P, 6))
+        self.lbl_ytdlp  = ttk.Label(self.dep_frame, text=self._t("checking_ytdlp"),
                                      foreground="#f9e2af", font=("Segoe UI", 9))
         self.lbl_ytdlp.pack(anchor="w")
-        self.lbl_ffmpeg = ttk.Label(dep, text="⏳ Checking ffmpeg…",
+        self.lbl_ffmpeg = ttk.Label(self.dep_frame, text=self._t("checking_ffmpeg"),
                                      foreground="#f9e2af", font=("Segoe UI", 9))
         self.lbl_ffmpeg.pack(anchor="w")
-        self.dep_pbar = ttk.Progressbar(dep, mode="indeterminate", length=300)
+        self.dep_pbar = ttk.Progressbar(self.dep_frame, mode="indeterminate", length=300)
         self.dep_pbar.pack(anchor="w", pady=(6, 0))
         self.dep_pbar.start(10)
 
         # ── URL ───────────────────────────────────────────────────────────────
-        uf = ttk.LabelFrame(self.root, text="  Video URL  ", padding=10)
-        uf.pack(fill="x", padx=P, pady=6)
-        ur = ttk.Frame(uf); ur.pack(fill="x")
+        self.url_frame = ttk.LabelFrame(self.root, text=self._t("video_url"), padding=10)
+        self.url_frame.pack(fill="x", padx=P, pady=6)
+        ur = ttk.Frame(self.url_frame); ur.pack(fill="x")
         self.url_entry = ttk.Entry(ur, font=("Segoe UI", 10))
         self.url_entry.pack(side="left", fill="x", expand=True, ipady=5)
-        self.url_entry.insert(0, "Paste URL here…")
+        self.url_entry.insert(0, self._t("paste_placeholder"))
         self.url_entry.config(foreground="#6c7086")
         self.url_entry.bind("<FocusIn>",  self._clr_ph)
         self.url_entry.bind("<FocusOut>", self._rst_ph)
-        self.fetch_btn = ttk.Button(ur, text="  Fetch Info  ", style="Accent.TButton",
+        self.fetch_btn = ttk.Button(ur, text=self._t("fetch_info"), style="Accent.TButton",
                                     command=self._fetch_thread)
         self.fetch_btn.pack(side="left", padx=(10, 0), ipady=3)
 
         # ── Mode ──────────────────────────────────────────────────────────────
-        mf = ttk.LabelFrame(self.root, text="  Download Mode  ", padding=10)
-        mf.pack(fill="x", padx=P, pady=6)
-        mr = ttk.Frame(mf); mr.pack(anchor="w")
-        ttk.Radiobutton(mr, text="Video (MP4)", variable=self.dl_mode,
-                         value="video", command=self._mode_changed).pack(side="left", padx=(0, 24))
-        ttk.Radiobutton(mr, text="MP3 (audio only)", variable=self.dl_mode,
-                         value="mp3", command=self._mode_changed).pack(side="left")
-        self.mode_note = ttk.Label(mf, foreground="#6c7086",
+        self.mode_frame = ttk.LabelFrame(self.root, text=self._t("download_mode"), padding=10)
+        self.mode_frame.pack(fill="x", padx=P, pady=6)
+        mr = ttk.Frame(self.mode_frame); mr.pack(anchor="w")
+        self.rb_video = ttk.Radiobutton(mr, text=self._t("video_mp4"), variable=self.dl_mode,
+                         value="video", command=self._mode_changed)
+        self.rb_video.pack(side="left", padx=(0, 24))
+        self.rb_mp3 = ttk.Radiobutton(mr, text=self._t("mp3_audio"), variable=self.dl_mode,
+                         value="mp3", command=self._mode_changed)
+        self.rb_mp3.pack(side="left")
+        self.mode_note = ttk.Label(self.mode_frame, foreground="#6c7086",
                                     font=("Segoe UI", 9), wraplength=820)
         self.mode_note.pack(anchor="w", pady=(6, 0))
 
         # ── Video Info ────────────────────────────────────────────────────────
-        inf = ttk.LabelFrame(self.root, text="  Video Info  ", padding=10)
-        inf.pack(fill="x", padx=P, pady=6)
-        tr = ttk.Frame(inf); tr.pack(fill="x")
-        ttk.Label(tr, text="Title:", width=10).pack(side="left")
+        self.info_frame = ttk.LabelFrame(self.root, text=self._t("video_info"), padding=10)
+        self.info_frame.pack(fill="x", padx=P, pady=6)
+        tr = ttk.Frame(self.info_frame); tr.pack(fill="x")
+        self.lbl_title_label = ttk.Label(tr, text=self._t("title"), width=10)
+        self.lbl_title_label.pack(side="left")
         self.lbl_title = ttk.Label(tr, text="—", foreground="#a6e3a1",
                                     font=("Segoe UI", 10, "bold"),
                                     wraplength=720, justify="left")
         self.lbl_title.pack(side="left", fill="x", expand=True)
-        dr = ttk.Frame(inf); dr.pack(fill="x", pady=(4, 0))
-        ttk.Label(dr, text="Duration:", width=10).pack(side="left")
+        dr = ttk.Frame(self.info_frame); dr.pack(fill="x", pady=(4, 0))
+        self.lbl_dur_label = ttk.Label(dr, text=self._t("duration"), width=10)
+        self.lbl_dur_label.pack(side="left")
         self.lbl_dur = ttk.Label(dr, text="—")
         self.lbl_dur.pack(side="left")
 
         # ── Options ───────────────────────────────────────────────────────────
-        of = ttk.LabelFrame(self.root, text="  Options  ", padding=10)
-        of.pack(fill="x", padx=P, pady=6)
-        rr = ttk.Frame(of); rr.pack(fill="x", pady=(0, 8))
-        self.lbl_res = ttk.Label(rr, text="Resolution:", width=10)
+        self.opt_frame = ttk.LabelFrame(self.root, text=self._t("options"), padding=10)
+        self.opt_frame.pack(fill="x", padx=P, pady=6)
+        rr = ttk.Frame(self.opt_frame); rr.pack(fill="x", pady=(0, 8))
+        self.lbl_res = ttk.Label(rr, text=self._t("resolution"), width=10)
         self.lbl_res.pack(side="left")
         self.res_combo = ttk.Combobox(rr, textvariable=self.selected_fmt,
                                        state="readonly", font=("Segoe UI", 10))
         self.res_combo.pack(side="left", fill="x", expand=True, ipady=4)
-        xr = ttk.Frame(of); xr.pack(fill="x")
-        ttk.Label(xr, text="Save to:", width=10).pack(side="left")
+        xr = ttk.Frame(self.opt_frame); xr.pack(fill="x")
+        self.lbl_save = ttk.Label(xr, text=self._t("save_to"), width=10)
+        self.lbl_save.pack(side="left")
         ttk.Entry(xr, textvariable=self.output_dir,
                   font=("Segoe UI", 9)).pack(side="left", fill="x", expand=True, ipady=4)
-        ttk.Button(xr, text="Browse",
-                   command=self._browse).pack(side="left", padx=(8, 0), ipady=3)
+        self.browse_btn = ttk.Button(xr, text=self._t("browse"),
+                   command=self._browse)
+        self.browse_btn.pack(side="left", padx=(8, 0), ipady=3)
 
         # ── Download / Abort ──────────────────────────────────────────────────
         bf = ttk.Frame(self.root); bf.pack(fill="x", padx=P, pady=8)
-        self.dl_btn = ttk.Button(bf, text="⬇  Download", style="Accent.TButton",
+        self.dl_btn = ttk.Button(bf, text=self._t("download"), style="Accent.TButton",
                                   command=self._start_dl)
         self.dl_btn.pack(side="left", fill="x", expand=True, ipady=7, padx=(0, 8))
-        self.abort_btn = ttk.Button(bf, text="✖  Abort", style="Danger.TButton",
+        self.abort_btn = ttk.Button(bf, text=self._t("abort"), style="Danger.TButton",
                                      command=self._abort, state="disabled")
         self.abort_btn.pack(side="left", fill="x", expand=True, ipady=7)
 
         # ── Progress ──────────────────────────────────────────────────────────
-        pf = ttk.LabelFrame(self.root, text="  Progress  ", padding=12)
-        pf.pack(fill="x", padx=P, pady=(0, P))
-        self.pbar = ttk.Progressbar(pf, orient="horizontal",
+        self.prog_frame = ttk.LabelFrame(self.root, text=self._t("progress"), padding=12)
+        self.prog_frame.pack(fill="x", padx=P, pady=(0, P))
+        self.pbar = ttk.Progressbar(self.prog_frame, orient="horizontal",
                                      mode="determinate", maximum=100)
         self.pbar.pack(fill="x", pady=(0, 8))
-        sr = ttk.Frame(pf); sr.pack(fill="x")
+        sr = ttk.Frame(self.prog_frame); sr.pack(fill="x")
         self.lbl_pct  = ttk.Label(sr, text="0%",       font=("Segoe UI", 11, "bold"),
                                     foreground="#89b4fa", width=7)
-        self.lbl_spd  = ttk.Label(sr, text="Speed: —", foreground="#f9e2af",
+        self.lbl_spd  = ttk.Label(sr, text=self._t("speed"), foreground="#f9e2af",
                                     font=("Segoe UI", 10), width=20)
-        self.lbl_eta  = ttk.Label(sr, text="ETA: —",   foreground="#a6e3a1",
+        self.lbl_eta  = ttk.Label(sr, text=self._t("eta"),   foreground="#a6e3a1",
                                     font=("Segoe UI", 10), width=14)
-        self.lbl_size = ttk.Label(sr, text="Size: —",  foreground="#cba6f7",
+        self.lbl_size = ttk.Label(sr, text=self._t("size"),  foreground="#cba6f7",
                                     font=("Segoe UI", 10))
         for w in (self.lbl_pct, self.lbl_spd, self.lbl_eta, self.lbl_size):
             w.pack(side="left")
-        self.lbl_status = ttk.Label(pf, text="Waiting for dependencies…",
+        self.lbl_status = ttk.Label(self.prog_frame, text=self._t("waiting_deps"),
                                      foreground="#6c7086", font=("Segoe UI", 9),
                                      wraplength=840, justify="left")
         self.lbl_status.pack(anchor="w", pady=(8, 0))
@@ -465,51 +662,46 @@ class App:
         self.dep_pbar.pack_forget()
 
         if yt_dlp is None:
-            self.lbl_ytdlp.config(text="✘ yt-dlp not available — restart app",
+            self.lbl_ytdlp.config(text=self._t("ytdlp_not_avail2"),
                                    foreground="#f38ba8")
         else:
             c = "#f9e2af" if YT_DLP_UPDATED else "#a6e3a1"
-            s = " (just updated!)" if YT_DLP_UPDATED else " (up to date)"
+            s = self._t("ytdlp_updated") if YT_DLP_UPDATED else self._t("ytdlp_uptodate")
             self.lbl_ytdlp.config(text=f"✔ yt-dlp {YT_DLP_VERSION}{s}", foreground=c)
 
         if FFMPEG_PATH:
             self.lbl_ffmpeg.config(text=f"✔ ffmpeg: {FFMPEG_PATH}", foreground="#a6e3a1")
         else:
-            self.lbl_ffmpeg.config(
-                text="⚠ ffmpeg not available — MP3 and high-res merging disabled",
+            self.lbl_ffmpeg.config(text=self._t("ffmpeg_disabled"),
                 foreground="#f38ba8")
 
-        self.lbl_status.config(text="Ready.", foreground="#6c7086")
+        self.lbl_status.config(text=self._t("ready"), foreground="#6c7086")
 
     # ── Placeholder ───────────────────────────────────────────────────────────
 
     def _clr_ph(self, _=None):
-        if self.url_entry.get() == "Paste URL here…":
+        if self.url_entry.get() in ("Paste URL here…", "URL'yi buraya yapıştırın…"):
             self.url_entry.delete(0, "end")
             self.url_entry.config(foreground="#cdd6f4")
 
     def _rst_ph(self, _=None):
         if not self.url_entry.get().strip():
-            self.url_entry.insert(0, "Paste URL here…")
+            self.url_entry.insert(0, self._t("paste_placeholder"))
             self.url_entry.config(foreground="#6c7086")
 
     # ── Mode ──────────────────────────────────────────────────────────────────
 
     def _mode_changed(self):
         if self.dl_mode.get() == "mp3":
-            self.lbl_res.config(text="Quality:")
-            self.mode_note.config(
-                text="MP3 mode: extracts audio only, converts to MP3, "
-                     "embeds thumbnail & metadata. Requires ffmpeg.")
+            self.lbl_res.config(text=self._t("quality"))
+            self.mode_note.config(text=self._t("mp3_note"))
             self.res_combo.config(values=[
                 "320 kbps (best quality)", "256 kbps", "192 kbps",
                 "128 kbps", "96 kbps (smallest file)"])
             self.res_combo.current(0)
         else:
-            self.lbl_res.config(text="Resolution:")
-            self.mode_note.config(
-                text="Video mode: downloads video + audio merged into MP4 "
-                     "with AAC audio (Windows Media Player compatible).")
+            self.lbl_res.config(text=self._t("resolution"))
+            self.mode_note.config(text=self._t("video_note"))
             if self.formats:
                 self.res_combo.config(values=[c[1] for c in self.formats])
                 self.res_combo.current(0)
@@ -530,18 +722,18 @@ class App:
 
     def _fetch_thread(self):
         if not self._deps_ready:
-            messagebox.showinfo("Please wait", "Dependencies are still loading.")
+            messagebox.showinfo(self._t("please_wait"), self._t("deps_loading"))
             return
         if yt_dlp is None:
-            messagebox.showerror("yt-dlp missing", "yt-dlp not available. Restart the app.")
+            messagebox.showerror(self._t("ytdlp_missing"), self._t("ytdlp_not_avail"))
             return
         url = self.url_entry.get().strip()
-        if not url or url == "Paste URL here…":
-            messagebox.showwarning("No URL", "Please paste a URL first.")
+        if not url or url in ("Paste URL here…", "URL'yi buraya yapıştırın…"):
+            messagebox.showwarning(self._t("no_url"), self._t("paste_url_first"))
             return
 
         self.fetch_btn.config(state="disabled")
-        self._setstatus("Fetching video info…", "#f9e2af")
+        self._setstatus(self._t("fetching_info"), "#f9e2af")
 
         # Start timeout timer
         self._fetch_timed_out = False
@@ -552,10 +744,9 @@ class App:
         threading.Thread(target=self._fetch_worker, args=(url,), daemon=True).start()
 
     def _fetch_timeout(self):
-        """Called if fetch takes longer than FETCH_TIMEOUT seconds."""
         self._fetch_timed_out = True
         self._setstatus(
-            f"Fetch timed out after {FETCH_TIMEOUT}s — check your connection or URL.",
+            self._t("fetch_timeout").format(t=FETCH_TIMEOUT),
             "#f38ba8"
         )
         self.fetch_btn.config(state="normal")
@@ -583,7 +774,7 @@ class App:
             dur_s  = info.get("duration") or 0
             dur_st = time.strftime("%H:%M:%S", time.gmtime(dur_s)) if dur_s else "—"
 
-            seen, choices = set(), [("best", "Best (auto-selected)")]
+            seen, choices = set(), [("best", self._t("best_auto"))]
             for f in sorted(info.get("formats", []),
                             key=lambda x: x.get("height") or 0, reverse=True):
                 h   = f.get("height")
@@ -597,7 +788,7 @@ class App:
                 seen.add((h, ext))
                 fps_s = f" {int(fps)}fps" if fps else ""
                 sz_s  = f"  ~{fsz/1_048_576:.0f} MB" if fsz else ""
-                warn  = "  ⚠ needs ffmpeg" if not FFMPEG_PATH and h > 720 else ""
+                warn  = self._t("needs_ffmpeg") if not FFMPEG_PATH and h > 720 else ""
                 choices.append((fid, f"{h}p{fps_s}  [{ext}]{sz_s}{warn}  (id:{fid})"))
 
             self.root.after(0, lambda: self._fetch_done(title, dur_st, choices))
@@ -615,36 +806,34 @@ class App:
         if self.dl_mode.get() == "video":
             self.res_combo.config(values=[c[1] for c in choices])
             self.res_combo.current(0)
-        self._setstatus("Info fetched — select options and click Download.", "#a6e3a1")
+        self._setstatus(self._t("info_fetched"), "#a6e3a1")
         self.fetch_btn.config(state="normal")
 
     def _fetch_err(self, err):
         self._cancel_fetch_timer()
         self._setstatus(f"Error: {err}", "#f38ba8")
-        messagebox.showerror("Fetch Error", f"Could not fetch video info:\n\n{err}")
+        messagebox.showerror(self._t("fetch_error"), f"{self._t('fetch_err_msg')}{err}")
         self.fetch_btn.config(state="normal")
 
     # ── Download ──────────────────────────────────────────────────────────────
 
     def _start_dl(self):
         if not self._deps_ready:
-            messagebox.showinfo("Please wait", "Dependencies are still loading.")
+            messagebox.showinfo(self._t("please_wait"), self._t("deps_loading"))
             return
         if yt_dlp is None:
-            messagebox.showerror("yt-dlp missing", "yt-dlp not available. Restart the app.")
+            messagebox.showerror(self._t("ytdlp_missing"), self._t("ytdlp_not_avail"))
             return
         url = self.url_entry.get().strip()
-        if not url or url == "Paste URL here…":
-            messagebox.showwarning("No URL", "Please paste a URL first.")
+        if not url or url in ("Paste URL here…", "URL'yi buraya yapıştırın…"):
+            messagebox.showwarning(self._t("no_url"), self._t("paste_url_first"))
             return
         mode = self.dl_mode.get()
         if mode == "video" and not self.formats:
-            messagebox.showwarning("No Format", "Please fetch video info first.")
+            messagebox.showwarning(self._t("no_format"), self._t("fetch_first"))
             return
         if mode == "mp3" and not FFMPEG_PATH:
-            messagebox.showerror("ffmpeg Required",
-                "ffmpeg was not found or could not be downloaded.\n"
-                "Check your internet connection and restart the app.")
+            messagebox.showerror(self._t("ffmpeg_required"), self._t("ffmpeg_not_found"))
             return
 
         idx = self.res_combo.current()
@@ -659,12 +848,12 @@ class App:
 
         if mode == "mp3":
             br = ["320","256","192","128","96"][max(idx, 0)]
-            self._setstatus(f"Starting MP3 download at {br} kbps…", "#89b4fa")
+            self._setstatus(self._t("starting_mp3").format(br=br), "#89b4fa")
             t = threading.Thread(target=self._dl_mp3,
                                   args=(clean_url(url), br, out), daemon=True)
         else:
             fid = self.formats[idx][0] if idx >= 0 and self.formats else "best"
-            self._setstatus("Starting video download…", "#89b4fa")
+            self._setstatus(self._t("starting_video"), "#89b4fa")
             t = threading.Thread(target=self._dl_video,
                                   args=(clean_url(url), fid, out), daemon=True)
         t.start()
@@ -690,17 +879,17 @@ class App:
                     self.lbl_spd.config(text=f"Speed: {sm:.2f} MB/s")
                     self.lbl_eta.config(text=f"ETA: {es}")
                     self.lbl_size.config(text=f"Size: {ss}")
-                    self._setstatus(f"Downloading… {pct:.1f}%", "#89b4fa")
+                    self._setstatus(self._t("downloading").format(pct=pct), "#89b4fa")
                 self.root.after(0, upd)
             elif d["status"] == "finished":
-                self.root.after(0, lambda: self._setstatus("Post-processing…", "#f9e2af"))
+                self.root.after(0, lambda: self._setstatus(self._t("post_processing"), "#f9e2af"))
         return h
 
     # ── Video download ────────────────────────────────────────────────────────
 
     def _dl_video(self, url, fid, out):
         fmt = ("bestvideo+bestaudio/best" if FFMPEG_PATH else "best") if fid == "best" \
-              else (f"{fid}+bestaudio/best" if FFMPEG_PATH else fid)
+              else (f"{fid}+bestaudio/{fid}" if FFMPEG_PATH else fid)
         opts = {
             "format": fmt,
             "outtmpl": os.path.join(out, "%(title)s.%(ext)s"),
@@ -744,22 +933,23 @@ class App:
         except Exception as e:
             err = str(e)
             if "aborted" in err.lower():
-                self.root.after(0, lambda: self._setstatus("Download aborted.", "#f38ba8"))
+                self.root.after(0, lambda: self._setstatus(self._t("dl_aborted"), "#f38ba8"))
             else:
                 self.root.after(0, lambda: self._setstatus(f"Error: {err}", "#f38ba8"))
-                self.root.after(0, lambda: messagebox.showerror("Download Error", err))
+                self.root.after(0, lambda: messagebox.showerror(self._t("dl_error"), err))
         finally:
             self.root.after(0, self._reset)
 
     def _done(self, label):
         self.pbar["value"] = 100
         self.lbl_pct.config(text="100%")
-        self._setstatus(f"✔ {label} download complete!", "#a6e3a1")
-        messagebox.showinfo("Done", f"{label} saved to:\n{self.output_dir.get()}")
+        self._setstatus(self._t("dl_complete").format(label=label), "#a6e3a1")
+        messagebox.showinfo(self._t("done"),
+                            self._t("saved_to").format(label=label, path=self.output_dir.get()))
 
     def _abort(self):
         self.abort_flag.set()
-        self._setstatus("Aborting…", "#f38ba8")
+        self._setstatus(self._t("aborting"), "#f38ba8")
 
     def _reset(self):
         self.dl_btn.config(state="normal")

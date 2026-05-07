@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pyo
+ytdl_deps/
+*.spec
+build/
+dist/
